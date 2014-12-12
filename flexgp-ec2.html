@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Run FlexGP</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="http://flexgp.github.io/flexgp/">FlexGP</a></h1>
+        <p></p>
+
+        <p class="view"><a href="https://github.com/flexgp/flexgp">View the Project on GitHub <small>flexgp/flexgp</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/flexgp/flexgp/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/flexgp/flexgp/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/flexgp/flexgp">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+
+<section>
+
+
+<h1><a name="run-flexgp" class="anchor" href="#run-flexgp"><span class="octicon octicon-link"></span></a>How to run FlexGP</h1>
+
+
+<p><font color="red">WARNING: DO NOT FORGET TO TERMINATE THE INSTANCES AT THE END OF THE FLEXGP RUN</font></p>
+
+
+
+<h3><a name="step1-train" class="anchor" href="#phase-1-train"><span class="octicon octicon-link"></span></a>Data format</h3>
+
+<p>Data must be provided in csv format where each line corresponds to an exemplar and the target values are placed 
+in the last column. Any additional line or column containing labels or nominal values needs to be removed.</p>
+
+<p>In this tutorial, we employ the White Wine Quality dataset is available at the <a href="http://archive.ics.uci.edu/ml/datasets/Wine+Quality">UCI 
+Machine Learning repository website</a>. The formatted data used in this example can be downloaded from here: <a href="downloads/winequality-white-train.csv">train data</a> 
+and <a href="downloads/winequality-white-test.csv">test data</a>.</p>
+
+
+
+
+
+
+<h3><a name="step1-train" class="anchor" href="#phase-1-train"><span class="octicon octicon-link"></span></a>Step 0: obtain an Amazon Web Service account and install the EC2 API tools</h3>
+
+<p>Signup for a AWS account from <a href="https://aws.amazon.com">aws.amazon.com</a></p>
+<p><img align="center" src="images/accessAWS.png" alt="ALFA" Vspace="25" height="200"><br></p>
+
+<p>FlexGP requires the installation of the EC2 API tools:</p>
+
+<pre><code>$ sudo apt-get install ec2-api-tools ec2-ami-tools
+</code></pre>
+
+
+
+
+
+<br>
+<h3><a name="step1-train" class="anchor" href="#phase-1-train"><span class="octicon octicon-link"></span></a>Step 1: download the FlexGP software and set the credentials</h3>
+
+<p>Create the folder from where you will run FlexGP:</p>
+
+<pre><code>$ cd mkdir flexgp-run
+$ cd flexgp-run
+</code></pre>
+
+<p>Download the launch scripts, the certificates (<em><font color="blue">certs</font></em>) folder, the executables <em><font color="red">FlexGP.jar</font></em> 
+and <em><font color="red">mrgp-flexgp.jar</font></em>, and 
+the <em><font color="blue">data</font></em> folder from the github repository. The folder should look as below:</p>
+
+<pre><code>$ ls -R
+.:
+<font color="blue">certs</font>  <font color="red">FlexGP.jar</font> <font color="red">mrgp-flexgp.jar</font> <font color="blue">scripts</font>
+
+./certs:
+<font color="green">exportCredentials.sh</font>
+
+./data:
+winequality-white.properties  winequality-white-test.csv  winequality-white-train.csv
+
+./scripts:
+<font color="green">boot_strap.sh</font>  <font color="green">evogpj_config.py</font>  evogpj_funcs.txt  evogpj_pnorms.txt  gen_terms.txt  msd_terms.txt  <font color="green">part_handler.py</font>  <font color="green">select_data.py</font>  <font color="green">split_files.py</font>  <font color="green">start.sh</font>  <font color="green">user_vars.sh</font>
+</code></pre>
+
+<p>Edit <em><font color="green">certs/exportCredentials.sh</font></em> script in the <em><font color="blue">certs</font></em> folder with your Amazon credentials:</p>
+<pre><code>$ gedit certs/exportCredentials.sh
+export AWS_ACCESS_KEY=
+export AWS_SECRET_KEY=
+</code></pre>
+
+<p>Copy your keypair to the <em><font color="blue">certs</font></em> folder:</p>
+<pre><code>$ cp path_to_your_keypair certs
+</code></pre>
+
+
+
+
+
+<br>
+<h3><a name="step1-train" class="anchor" href="#phase-1-train"><span class="octicon octicon-link"></span></a>Step 2: set up the FlexGP run</h3>
+
+<p>Edit the following variables in <em><font color="green">scripts/user_vars.sh</font></em>:</p>
+
+<ol>
+<li><strong>ROOT</strong>: absolute path to flexgp-run</li>
+<li><strong>CERT</strong>: name of your certificate (minus the .pem suffix). It must match your AWS IAM user name.</li>
+<li><strong>TYPE</strong>: <a href="http://aws.amazon.com/ec2/instance-types/">flavor</a> of the cloud instances. Defaults to the basic <em>t1.micro</em>.</li>
+</ol>
+<pre><code>$ gedit scripts/user_vars.sh
+ROOT=
+CERT=
+TYPE=t1.micro
+AMI=ami-d20763ba
+</code></pre>
+<p>The AMI used by default is a public Amazon image that contains all the packages necessary to run FlexGP.</p>
+
+<p>Edit the <font color="blue">USER_VARS_SCRIPT_PATH</font> variable in <em><font color="green">scripts/boot_strap.sh</font></em>. It must contain
+the absolute path to the <em><font color="green">user_vars.sh</font></em> script:</p>
+<pre><code>$ gedit scripts/boot_strap.sh
+USER_VARS_SCRIPT_PATH="path_to_user_vars.sh"
+</code></pre>
+
+<p>Create a properties file to specify algorithmic parameters such as crossover and mutation rate, population size, maximum tree size etc. A working example for
+the white wine quality dataset can be found <a href="downloads/winequality-white.properties">here</a>. In particular the property <em>external_threads</em> sets the
+number of threads used to speedup MRGP in each cloud node.</p>
+<pre><code>external_threads = 4</code></pre>
+
+
+
+
+
+
+<br>
+<h3><a name="step1-train" class="anchor" href="#phase-1-train"><span class="octicon octicon-link"></span></a>Step 3: run FlexGP</h3>
+
+<p>To start FlexGP, run the script <em><font color="green">boot_strap.sh</font></em> with the following arguments:</p>
+<ol>
+<li><strong>-n</strong>: number of nodes to run</li>
+<li><strong>-p</strong>: path to properties file</li>
+<li><strong>-d</strong>: path to training data</li>
+<li><strong>-s</strong>: fraction of the training data used for learning at each node</li>
+</ol>
+
+<p>The example below will run FlexGP with 12 nodes, on the white wine quality dataset, each node selecting 50% of the training data:</p>
+<pre><code>$ scripts/boot_strap.sh -n 12 -p data/winequality-white.properties -d data/winequality-white-train.csv -s .5 &> flexgp.log &</code></pre>
+
+<p>For a complete description of FlexGP run options, please run:</p>
+<pre><code>$ scripts/boot_strap.sh</code></pre>
+
+<p>After running the script, you can verify from the AWS EC2 console that 12 intances were started:</p>
+<p><img align="center" src="images/running.png" alt="ALFA" Vspace="25" height="250"><br></p>
+
+
+
+
+
+<br>
+<h3><a name="step1-train" class="anchor" href="#phase-1-train"><span class="octicon octicon-link"></span></a>Step 4: retrieve the models</h3>
+
+<p>You can retrieve the models generated at the FlexGP nodes at any moment of the run. First edit the <font color="blue">USER_VARS_SCRIPT_PATH</font> variable
+in <em><font color="green">scripts/retrieve_logs.sh</font></em>. It must contain the absolute path to the <em><font color="green">user_vars.sh</font></em> script:</p>
+<pre><code>$ gedit scripts/retrieve_logs.sh
+USER_VARS_SCRIPT_PATH="path_to_user_vars.sh"
+</code></pre>
+
+<p>Then run the script:</p>
+<pre><code>$ scripts/retrieve_logs.sh</code></pre>
+
+<p>Verify that the models and log files have been successfully downloaded:</p>
+<pre><code>$ ls -R models/
+models/:
+54.144.201.76  54.144.222.147  54.144.238.10  54.144.238.4  54.145.201.59  54.161.222.123  54.167.131.67  54.197.136.184  54.204.148.60  54.205.50.99  54.205.85.173  54.82.68.178
+
+models/54.144.201.76:
+bestModelGeneration.txt  evolve.log  init.log  problem.properties
+
+...
+
+models/54.144.222.147:
+bestModelGeneration.txt  evolve.log  init.log  problem.properties
+</pre></code>
+
+
+
+
+
+<br>
+<h3><a name="step1-train" class="anchor" href="#phase-1-train"><span class="octicon octicon-link"></span></a>Step 5: model fusion</h3>
+
+<p>First, we select the 10 models with smallest error on the training data and store them in the file <em><font color="blue">finalModels.txt</font></em>. The command is as follows:</p>
+<pre><code>$ java -jar mrgp-flexgp.jar -getFinalModels path_to_models secondsThreshold path_to_fusion_data</code></pre>
+
+<p>In the example below, we filter the models obtained within the first ten minutes (600 seconds) of the run:</p>
+<pre><code>$ java -cp mrgp-flexgp.jar main.SRLearnerMenuManager -getFinalModels models 600 data/winequality-white-train.csv</code></pre>
+
+<p>Second, we fuse the extracted models. The fused model is stored in <em><font color="blue">fusedModel.txt</font></em>:</p>
+<pre><code>$ java -jar mrgp-flexgp.jar -fusedStats path_to_final_models path_to_fusion_data path_to_testing_data</code></pre>
+
+<p>Following our example, we run:</p>
+<pre><code>$ java -cp mrgp-flexgp.jar main.SRLearnerMenuManager -fusedStats finalModels.txt data/winequality-white-train.csv data/winequality-white-test.csv
+
+FUSING MODELS:
+
+TESTING FUSED MODEL:
+MSE fused Model: 0.545935884870968
+MAE fused Model: 0.5798478607270816
+</code></pre>
+
+
+</section>
+
+
+
+<footer>
+<p>This project is maintained by <a href="https://github.com/flexgp">flexgp</a></p>
+<p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+</footer>
+
+</div>
+<script src="javascripts/scale.fix.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>FlexGP library</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1><a href="index.html">FlexGP</a></h1>
+        <p>Tutorial and Blog</p>
+	      <div id="banner">
+		<span id="logo"></span>
+
+		<a href="https://github.com/flexgp/flexgp" class="button fork"><strong>View On GitHub</strong></a>
+	      </div><!-- end banner -->
+      </header>
+
+
+
+    <div class="wrapper">
+
+      <section>
+        <h1>
+<a name="flexgp-flexible-machine-learning-with-genetic-programming" class="anchor" href="#flexgp-flexible-machine-learning-with-genetic-programming"><span
+ class="octicon octicon-link"></span></a>Distributed Launch Protocol</h1>
+
+
+<p>FlexGP implements a robust, decentralized, peer-to-peer (P2P) startup algorithm. Every FlexGP instance is capable of launching other FlexGP instances. Immediately after booting, every FlexGP instance retrieves parameters from the node which started it.</p>
+
+<p>Below we illustrate how FlexGP would launch 7 instances when the fan-out k=2. Node A is launched and runs <em>NodeStart(7, [])</em>, where [] indicates an empty list. A then boots nodes B and X, each of which will go on to boot 2 more nodes each.</p>
+
+<p><center><img src="images/Startup1.png" height=300px align="middle" alt="startup1" Vspace="45"></center></p>
+
+<p>The next figure illustrate the timeline of two nodes during startup, showing the concurrency present in the FlexGP startup. As soon as node A finishes executing <em>NodeStart</em> and started nodes B and X, it starts a new thread to begin running the learner MRGP.</p>
+
+<p><center><img src="images/StartupTimeLine.png" height=300px align="middle" alt="startup2" Vspace="45"></center></p>
+
+<h1><a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon
+octicon-link"></span></a>Contact</h1>
+
+<p>This page has been created by the <a href="http://groups.csail.mit.edu/EVO-DesignOpt/groupWebSite/">Any-Scale Learning For All (ALFA)</a> group at MIT. Please contact us at: <a href="mailto:flexgp@csail.mit.edu">flexgp@csail.mit.edu</a> </p>
+<center><img src="images/ALFA-logo-lousy.png" alt="ALFA" align="middle" Vspace="45"></center></p>
+
+      </section>
+      <footer>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+
+  </body>
+</html>

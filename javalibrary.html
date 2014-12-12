@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>FlexGP P2P library</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1><a href="index.html">FlexGP</a></h1>
+        <p>Tutorial and Blog</p>
+	      <div id="banner">
+		<span id="logo"></span>
+
+		<a href="https://github.com/flexgp/flexgp" class="button fork"><strong>View On GitHub</strong></a>
+	      </div><!-- end banner -->
+      </header>
+
+
+    <div class="wrapper">
+      <section>
+        <h1>
+<a name="flexgp-flexible-machine-learning-with-genetic-programming" class="anchor" href="#flexgp-flexible-machine-learning-with-genetic-programming"><span
+ class="octicon octicon-link"></span></a>Java library for P2P communication</h1>
+
+<p>FlexGP implements a decentralized, fault tolerant communication layer. FlexGP provides a TCP/IP communication library that allows to pass messages between cloud nodes.</p> 
+
+<p>The communication library abtracts the concept of message in such a way that it is possible to
+ create, send, and receive different types of messages. In particular, the current FlexGP version employs two kinds of
+ messages:</p>
+
+<ol>
+<li><p><strong>Broadcast Messages</strong>: Each FlexGP node periodically refreshes its list of peer IPs. To this end, it pings its peers
+ and filters unresponsive nodes, i.e. nodes that did not reply to the ping message. Such broadcast signals are used
+ to maintain a list of responsive or “good” IP directions.</p></li>
+<li><p><strong>Migrant Messages</strong>: this functionality allows FlexGP nodes to perform migrations. FlexGP provides an abstract
+ Migrant Message class that needs to be extended and customized for each learner. This customization is necessary
+ since different learners employ different representations.</p></li>
+</ol>
+
+
+
+<h1><a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon
+octicon-link"></span></a>Contact</h1>
+
+<p>This page has been created by the <a href="http://groups.csail.mit.edu/EVO-DesignOpt/groupWebSite/">Any-Scale Learning For All (ALFA)</a> group at MIT. Please contact us at: <a href="mailto:flexgp@csail.mit.edu">flexgp@csail.mit.edu</a> </p>
+<center><img src="images/ALFA-logo-lousy.png" alt="ALFA" align="middle" Vspace="45"></center></p>
+
+      </section>
+      <footer>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+
+
+  </body>
+</html>
