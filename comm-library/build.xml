@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="jar" name="flexgp">
+  <property environment="env"/>
+  <!-- replace this field with the path to the folder containing MRGP's source code -->
+  <property name="evogpj.location" value="../mrgp-flexgp/"/>
+  <property name="debuglevel" value="source,lines,vars"/>
+  <property name="target" value="1.6"/>
+  <property name="source" value="1.6"/>
+  <path id="evogpj.classpath">
+    <pathelement location="${evogpj.location}/bin"/>
+    <!-- <pathelement location="${evogpj.location}/jscheme-7.2.jar"/> -->
+  </path>
+  <path id="flexgp.classpath">
+    <pathelement location="bin"/>
+    <pathelement location="lib/ext/commons-lang3-3.1.jar"/>
+    <pathelement location="lib/ext/fitsobj.jar"/>
+    <pathelement location="lib/ext/nc2obj.jar"/>
+    <pathelement location="lib/jhdf5.jar"/>
+    <pathelement location="lib/jhdfobj.jar"/>
+    <pathelement location="lib/junit-4.10.jar"/>
+    <pathelement location="lib/json-smart-1.1.1.jar"/>
+    <pathelement location="lib/sigar.jar"/>
+    <path refid="evogpj.classpath"/>
+  </path>
+  <target name="init">
+    <mkdir dir="bin"/>
+    <copy includeemptydirs="false" todir="bin">
+      <fileset dir="src">
+	<exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+  </target>
+  <target name="clean">
+    <delete dir="bin"/>
+  </target>
+  <target depends="clean" name="cleanall">
+    <ant antfile="build.xml" dir="${evogpj.location}" inheritAll="false" target="clean"/>
+  </target>
+  <target depends="build-subprojects,build-project" name="build"/>
+  <target name="build-subprojects">
+    <ant antfile="build.xml" dir="${evogpj.location}" inheritAll="false" target="clean"/>
+    <ant antfile="build.xml" dir="${evogpj.location}" inheritAll="false" target="build"/>
+  </target>
+  <target depends="init" name="build-project">
+    <echo message="${ant.project.name}: ${ant.file}"/>
+    <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+      <src path="src"/>
+      <classpath refid="flexgp.classpath"/>
+      <classpath refid="evogpj.classpath"/>
+    </javac>
+  </target>
+  <target depends="clean,build" name="jar" description="Create executable jar">
+    <jar destfile="./FlexGP.jar" basedir="./bin" filesetmanifest="mergewithoutmain">
+      <manifest>
+	<attribute name="Built-By" value="${user.name}" />
+	<attribute name="Main-Class" value="node.Control" />
+	<attribute name="Class-Path" value="." />
+      </manifest>
+      <fileset dir="./bin"/>
+      <fileset dir="${evogpj.location}/bin"/>
+      <zipfileset excludes="META-INF/*.SF" src="${evogpj.location}/lib/jscheme-7.2.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/jhdf5.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/jhdfobj.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/junit-4.10.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/json-smart-1.1.1.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/sigar.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/ext/commons-lang3-3.1.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/ext/fitsobj.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/ext/nc2obj.jar"/>
+   </jar>
+  </target>
+  <target depends="jar" name="javadoc">
+    <mkdir dir="doc"/>
+    <javadoc
+	classpath="FlexGP.jar:"
+	destdir="doc"
+	packagenames="*"
+	sourcepath="src"/>
+  </target>
+</project>

@@ -1,0 +1,8 @@
+function_set = + - * mydivide
+function_set = + - * mydivide exp mylog
+function_set = + - * mydivide sqrt square cube quart
+function_set = + - * mydivide sin cos
+function_set = + - * mydivide exp mylog sqrt square cube quart
+function_set = + - * mydivide exp mylog sin cos
+function_set = + - * mydivide sqrt square cube quart sin cos
+function_set = + - * mydivide exp mylog sqrt square cube quart sin cos

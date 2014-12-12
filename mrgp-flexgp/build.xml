@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="jar" name="evogpj">
+  <property name="docs.home" value="${basedir}/doc"/>
+  <property environment="env"/>
+  <property name="debuglevel" value="source,lines,vars"/>
+  <property name="target" value="1.6"/>
+  <property name="source" value="1.6"/>
+  <path id="evogpj.classpath">
+    <pathelement location="bin"/>
+    <pathelement location="lib/jscheme-7.2.jar"/>
+    <pathelement location="lib/junit-4.11.jar"/>
+    <pathelement location="lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="lib/json-smart-1.1.1.jar"/>
+    <pathelement location="lib/jsc.jar"/>
+  </path>
+  <target name="init">
+    <mkdir dir="bin"/>
+    <copy includeemptydirs="false" todir="bin">
+      <fileset dir="src">
+	<exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+  </target>
+  <target name="clean">
+    <delete dir="bin"/>
+  </target>
+  <target depends="init" name="build">
+    <echo message="${ant.project.name}: ${ant.file}"/>
+    <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+      <src path="src"/>
+      <classpath refid="evogpj.classpath"/>
+    </javac>
+  </target>
+  <target depends="build" name="run">
+    <java classname="algorithm.AlgorithmBase" failonerror="true" fork="yes">
+      <classpath refid="evogpj.classpath"/>
+      <arg line="ExperimentalSetup/silva_regression.properties"/>
+    </java>
+  </target>
+  <target name="run-rand-test">
+    <java classname="gp.MersenneTwister" failonerror="true" fork="yes">
+      <classpath refid="evogpj.classpath"/>
+    </java>
+  </target>
+  <target depends="clean,build" name="jar" description="Create executable jar">
+    <jar jarfile="./mrgp-flexgp.jar" basedir="./bin">
+      <manifest>
+	<attribute name="Built-By" value="${user.name}" />
+	<attribute name="Main-Class" value="algorithm.AlgorithmBase" />
+	<attribute name="Class-Path" value="${evogpj.classpath}" />
+      </manifest>
+      <fileset dir="./bin"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/jscheme-7.2.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/junit-4.11.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/hamcrest-core-1.3.jar"/>
+      <zipfileset excludes="META-INF/*.SF" src="./lib/json-smart-1.1.1.jar"/>
+    </jar>
+  </target>
+  <target depends="build" name="test" description="Create executable jar">
+    <jar jarfile="./test.jar" basedir="./bin">
+      <manifest>
+	<attribute name="Built-By" value="${user.name}" />
+	<attribute name="Main-Class" value="algorithm.TestSolution" />
+	<attribute name="Class-Path" value="${evogpj.classpath}" />
+      </manifest>
+    </jar>
+  </target>
+  <target name="javadoc">
+    <mkdir dir="doc"/>
+    <javadoc access="public" author="true" classpath="jscheme-7.2.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="*" source="1.6" sourcepath="src" splitindex="true" use="true" version="true">
+      <link href="http://download.oracle.com/javase/6/docs/api/"/>
+    </javadoc>
+  </target>
+  <target name="unitTest" depends="build">
+    <junit>
+      <classpath>
+	<pathelement location="lib/junit-4.11.jar"/>
+	<pathelement location="lib/hamcrest-core-1.3.jar"/>
+	<pathelement location="bin" />
+      </classpath>
+      <batchtest>
+	<fileset dir="src">
+	  <include name="*/*Test.java" />
+	</fileset>
+      </batchtest>
+      <formatter type="brief" usefile="false"/>
+    </junit>
+  </target>
+</project>
