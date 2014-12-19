@@ -39,8 +39,7 @@ TYPE=t1.micro
 
 
 ## Amazon EC2 AMI 
-AMI=ami-d20763ba
-
+AMI=ami-e0016c88
 # USERNAME FOR THE VIRTUAL MACHINES 
 USER=ubuntu
 
